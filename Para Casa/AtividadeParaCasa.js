@@ -26,7 +26,7 @@ function enviarEmail(corpo, para){
         setTimeout(() => {  
             var deuErro = false;
             if(!deuErro){
-                resolve({time: 6, to: "jenifer@reprograma.com"}) // Promessa OK!
+                resolve({corpo: corpo, to: para}) // Promessa OK!
             }else{
                 reject("Fila cheia") // Foi mal, eu falhei :(
             }
@@ -37,14 +37,13 @@ function enviarEmail(corpo, para){
 
 // aqui vc pode chamar uma promise dentro de outra(Promisses aninhadas ou Promisse Hell)
 console.log("Inicio!");
-pegarId().then((id) => {
-    buscarEmailNoBanco(id).then((email) => { 
-        enviarEmail("Olá, como vai?",email).then(() => {
-            console.log("Email enviado, para o usuário com id: " + id)
-        }).catch(err => {
-            console.log(err);
-        })
-        
-    })
-})
-console.log("Foi!");
+
+async function principal(){
+    let pegaIds = pegarId()
+    let buscarEmail = await buscarEmailNoBanco(pegaIds)
+    let enviaEmail =  await enviarEmail('Olá! Teste', buscarEmail)
+    console.log(enviaEmail);
+    console.log('Fim!')
+}
+principal()
+
